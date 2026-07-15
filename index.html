@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alex Rivera</title>
+<meta name="description" content="Articles, photos, and videos.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  /* ============================================================
+     THEME — change colors, fonts, and spacing here.
+     Everything below uses these variables, so this is the
+     one place to edit for a full restyle.
+     ============================================================ */
+  :root{
+    --bg:        #F6F4EF;   /* page background */
+    --surface:   #FFFFFF;   /* card / entry background */
+    --border:    #E4E0D6;   /* hairlines between entries */
+    --ink:       #24231F;   /* main text */
+    --muted:     #837C6C;   /* secondary text, dates, captions */
+    --accent:    #3D5A6C;   /* links, tags, the one accent color */
+    --accent-soft: #E4EBEE; /* accent used as a light fill */
+
+    --font-display: 'Fraunces', Georgia, serif;
+    --font-body:    'Inter', system-ui, -apple-system, sans-serif;
+    --font-mono:    'Space Mono', ui-monospace, monospace;
+
+    --max-width: 680px;
+    --radius: 6px;
+  }
+
+  *{ box-sizing: border-box; }
+  html{ scroll-behavior: smooth; }
+
+  body{
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a{ color: var(--accent); }
+  a:focus-visible, button:focus-visible{
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+  }
+
+  .wrap{
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ---------- header ---------- */
+  header{
+    padding: 64px 0 36px;
+  }
+  .eyebrow{
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin: 0 0 12px;
+  }
+  h1{
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(32px, 6vw, 46px);
+    margin: 0 0 16px;
+    letter-spacing: -0.01em;
+  }
+  .bio{
+    color: var(--muted);
+    font-size: 16px;
+    max-width: 54ch;
+    margin: 0 0 20px;
+  }
+  .links{
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    font-size: 14px;
+  }
+  .links a{ color: var(--ink); border-bottom: 1px solid var(--border); padding-bottom: 1px; }
+  .links a:hover{ color: var(--accent); border-color: var(--accent); }
+
+  /* ---------- filters ---------- */
+  .filters{
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding: 8px 0 32px;
+    border-bottom: 1px solid var(--border);
+  }
+  .filters button{
+    font-family: var(--font-mono);
+    font-size: 12px;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 7px 14px;
+    border-radius: 999px;
+    cursor: pointer;
+  }
+  .filters button:hover{ border-color: var(--accent); color: var(--accent); }
+  .filters button.active{
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+
+  /* ---------- feed ---------- */
+  .feed{ padding: 36px 0 80px; }
+
+  .entry{
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px;
+    margin-bottom: 24px;
+  }
+
+  .entry-head{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .kind{
+    font-family: var(--font-mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+    color: var(--accent);
+    background: var(--accent-soft);
+    padding: 3px 9px;
+    border-radius: 999px;
+  }
+  .date{
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .entry h2{
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 600;
+    margin: 0 0 12px;
+  }
+
+  /* article body text */
+  .entry .text p{
+    margin: 0 0 14px;
+    color: var(--ink);
+    font-size: 15.5px;
+  }
+  .entry .text p:last-child{ margin-bottom: 0; }
+
+  /* photo grid */
+  .photo-grid{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .photo-grid img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 4px;
+    display: block;
+    aspect-ratio: 4 / 3;
+  }
+  .photo-grid.single{ grid-template-columns: 1fr; }
+  .photo-grid.single img{ aspect-ratio: 16 / 10; }
+  .caption{
+    color: var(--muted);
+    font-size: 13.5px;
+    margin: 0;
+  }
+
+  /* video */
+  .video-frame{
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: 4px;
+    overflow: hidden;
+    background: #000;
+    margin-bottom: 12px;
+    cursor: pointer;
+  }
+  .video-frame img{
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display: block;
+    opacity: .85;
+  }
+  .video-frame iframe{
+    width: 100%; height: 100%;
+    border: 0;
+    display: block;
+  }
+  .play-button{
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.92);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform .15s ease;
+  }
+  .video-frame:hover .play-button{ transform: translate(-50%, -50%) scale(1.06); }
+  .play-button svg{ width: 22px; height: 22px; fill: var(--ink); margin-left: 3px; }
+
+  .entry .text.description p{ font-size: 14.5px; }
+
+  .empty{
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 14px;
+    padding: 24px 0;
+  }
+
+  footer{
+    border-top: 1px solid var(--border);
+    padding: 28px 0 60px;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 12px;
+  }
+</style>
+</head>
+<body>
+
+  <div class="wrap">
+    <header>
+      <p class="eyebrow">Personal site</p>
+      <h1>Alex Rivera</h1>
+      <p class="bio">Writing, photos, and videos — mostly about long walks, slow travel, and whatever I'm currently building. Updated whenever there's something worth sharing.</p>
+      <div class="links">
+        <a href="mailto:you@example.com">email</a>
+        <a href="https://youtube.com/@yourchannel" target="_blank" rel="noopener">youtube</a>
+        <a href="https://instagram.com/yourusername" target="_blank" rel="noopener">instagram</a>
+      </div>
+    </header>
+
+    <nav class="filters" id="filters" aria-label="Filter by type"></nav>
+
+    <main class="feed" id="feed"></main>
+
+    <footer>
+      built with html · hosted on github pages
+    </footer>
+  </div>
+
+<script>
+/* ============================================================
+   EDIT ME — add a new entry to the TOP of this array whenever
+   you post something. Three kinds: "article", "photo", "video".
+
+   article:
+     { type: "article", title, date, text: [ "paragraph one", "paragraph two" ] }
+
+   photo:
+     { type: "photo", title, date, images: [ "images/file.jpg" ], caption }
+     (images are relative paths — put the files in an /images
+     folder next to this index.html)
+
+   video:
+     { type: "video", title, date, youtubeId: "VIDEO_ID_FROM_URL", description }
+     (the ID is the part after "v=" in a youtube.com/watch?v=... URL,
+      or after youtu.be/)
+   ============================================================ */
+const ENTRIES = [
+  {
+    type: "article",
+    title: "Three days in the Dolomites",
+    date: "2026-06-28",
+    text: [
+      "Spent three days hiking the Alta Via 1 with no real plan beyond the first hut booking. The weather turned twice, which ended up being the best part — you notice a lot more when you're waiting out rain under an overhang.",
+      "Writing up the full route notes soon, but the short version: bring more socks than you think you need."
+    ]
+  },
+  {
+    type: "video",
+    title: "How I edit my travel photos",
+    date: "2026-06-20",
+    youtubeId: "dQw4w9WgXcQ",
+    description: "A quick walkthrough of my Lightroom process for the shots from the last trip."
+  },
+  {
+    type: "photo",
+    title: "Sunrise, Seceda ridge",
+    date: "2026-06-15",
+    images: ["images/seceda-1.jpg", "images/seceda-2.jpg"],
+    caption: "5:40am, -2°C, worth it."
+  },
+  {
+    type: "article",
+    title: "Why I stopped using a to-do app",
+    date: "2026-05-02",
+    text: [
+      "Switched to a single paper notebook a few months ago and haven't looked back. Not making a grand claim about analog vs digital — it just turned out that friction was the feature I needed."
+    ]
+  }
+];
+/* ============================================================
+   Nothing below this line needs editing.
+   ============================================================ */
+
+function formatDate(iso){
+  const d = new Date(iso + "T00:00:00");
+  return d.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
+}
+
+function playIcon(){
+  return '<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
+}
+
+function renderEntryBody(e){
+  if (e.type === "article"){
+    return `<div class="text">${e.text.map(p => `<p>${p}</p>`).join("")}</div>`;
+  }
+  if (e.type === "photo"){
+    const gridClass = e.images.length === 1 ? "photo-grid single" : "photo-grid";
+    return `
+      <div class="${gridClass}">
+        ${e.images.map(src => `<img src="${src}" alt="${e.title}" loading="lazy">`).join("")}
+      </div>
+      ${e.caption ? `<p class="caption">${e.caption}</p>` : ""}
+    `;
+  }
+  if (e.type === "video"){
+    return `
+      <div class="video-frame" data-yt="${e.youtubeId}">
+        <img src="https://img.youtube.com/vi/${e.youtubeId}/hqdefault.jpg" alt="${e.title} thumbnail" loading="lazy">
+        <div class="play-button">${playIcon()}</div>
+      </div>
+      ${e.description ? `<div class="text description"><p>${e.description}</p></div>` : ""}
+    `;
+  }
+  return "";
+}
+
+function render(activeType){
+  const feed = document.getElementById("feed");
+  const sorted = [...ENTRIES].sort((a, b) => b.date.localeCompare(a.date));
+  const filtered = activeType ? sorted.filter(e => e.type === activeType) : sorted;
+
+  if (filtered.length === 0){
+    feed.innerHTML = `<p class="empty">// nothing here yet</p>`;
+    return;
+  }
+
+  feed.innerHTML = filtered.map(e => `
+    <article class="entry">
+      <div class="entry-head">
+        <span class="kind">${e.type}</span>
+        <time class="date" datetime="${e.date}">${formatDate(e.date)}</time>
+      </div>
+      <h2>${e.title}</h2>
+      ${renderEntryBody(e)}
+    </article>
+  `).join("");
+
+  // wire up click-to-play for video facades (keeps YouTube from loading until asked)
+  feed.querySelectorAll(".video-frame").forEach(frame => {
+    frame.addEventListener("click", () => {
+      const id = frame.dataset.yt;
+      frame.innerHTML = `<iframe
+        src="https://www.youtube-nocookie.com/embed/${id}?autoplay=1"
+        title="YouTube video player"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen></iframe>`;
+    }, { once: true });
+  });
+}
+
+function renderFilters(){
+  const bar = document.getElementById("filters");
+  const types = [
+    { key: "", label: "all" },
+    { key: "article", label: "articles" },
+    { key: "photo", label: "photos" },
+    { key: "video", label: "videos" }
+  ];
+  let active = null;
+
+  function draw(){
+    bar.innerHTML = types.map(t =>
+      `<button data-type="${t.key}" class="${active === (t.key || null) ? 'active' : ''}">${t.label}</button>`
+    ).join("");
+    bar.querySelectorAll("button").forEach(btn => {
+      btn.addEventListener("click", () => {
+        active = btn.dataset.type || null;
+        draw();
+        render(active);
+      });
+    });
+  }
+  draw();
+}
+
+renderFilters();
+render(null);
+</script>
+
+</body>
+</html>
