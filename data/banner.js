@@ -12,5 +12,5 @@
    now) and the banner just won't show up — nothing breaks.
    ============================================================ */
 window.BANNER_IMAGES = [
-   "images/Galaxy Gorilla BG Banner.jpg"
+   "images/Galaxy Gorilla BG Banner.JPG"
 ];
