@@ -12,7 +12,5 @@
    now) and the banner just won't show up — nothing breaks.
    ============================================================ */
 window.BANNER_IMAGES = [
-  // "images/banner-1.jpg",
-  // "images/banner-2.jpg",
-  // "images/banner-3.jpg"
+   "images/Galaxy Gorilla BG.jpg"
 ];
