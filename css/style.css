@@ -21,7 +21,6 @@
 
   --banner-height: 56px;   /* how thin the strip is */
   --banner-speed: 40;      /* pixels per second — lower = slower */
-  --banner-gap: 3px;       /* space between images in the strip */
 }
 
 *{ box-sizing: border-box; }
@@ -61,8 +60,8 @@ a:focus-visible, button:focus-visible{
   align-items: center;
   height: 100%;
   width: max-content;
-  gap: var(--banner-gap);
   animation-name: banner-scroll;
+  animation-duration: 30s; /* fallback only — js/app.js overrides this with a value based on actual image widths */
   animation-timing-function: linear;
   animation-iteration-count: infinite;
 }
