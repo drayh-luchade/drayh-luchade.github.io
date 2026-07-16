@@ -14,7 +14,7 @@
    something unique to you (e.g. your domain) to avoid clashing
    with other people's counters. */
 const COUNTER_BASE = "https://countapi.mileshilliard.com/api/v1";
-const SITE_KEY = "alexrivera-personal-site"; // change this to something unique to you
+const SITE_KEY = "drayh-luchade-personal-site"; // change this to something unique to you
 
 function counterKey(entryId){
   return `${SITE_KEY}_${entryId}`;
