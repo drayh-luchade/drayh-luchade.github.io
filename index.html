@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Alex Rivera</title>
+<meta name="description" content="Articles, photos, and videos.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ============================================================
+       BANNER — thin scrolling image strip. Add image paths in
+       data/banner.js. Automatically hides itself if that list
+       is empty, so it's safe to leave as-is.
+       ============================================================ -->
+  <div class="banner" id="banner">
+    <div class="banner-track" id="bannerTrack"></div>
+  </div>
+
+  <div class="wrap">
+    <!-- ============================================================
+         HEADER — edit your name, bio, and social links here.
+         This is the only part of index.html you should need to touch.
+         ============================================================ -->
+    <header>
+      <p class="eyebrow">Personal site</p>
+      <h1>Alex Rivera</h1>
+      <p class="bio">Writing, photos, and videos — mostly about long walks, slow travel, and whatever I'm currently building.</p>
+      <div class="links">
+        <a href="mailto:you@example.com">email</a>
+        <a href="https://youtube.com/@yourchannel" target="_blank" rel="noopener">youtube</a>
+        <a href="https://instagram.com/yourusername" target="_blank" rel="noopener">instagram</a>
+      </div>
+    </header>
+
+    <nav class="controls">
+      <div class="filters" id="filters" aria-label="Filter by type"></div>
+      <div class="sort" id="sort" aria-label="Sort order"></div>
+    </nav>
+
+    <main class="feed" id="feed">
+      <p class="empty">loading…</p>
+    </main>
+
+    <footer>
+      built with html · hosted on github pages
+    </footer>
+  </div>
+
+  <!-- Data files: each one is a plain array you edit directly.
+       Order matters only in that these must load before app.js -->
+  <script src="data/banner.js"></script>
+  <script src="data/articles.js"></script>
+  <script src="data/photos.js"></script>
+  <script src="data/videos.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
