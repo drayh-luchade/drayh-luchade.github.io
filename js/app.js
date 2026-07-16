@@ -256,40 +256,46 @@ function renderControls(){
 }
 
 /* ---- scrolling banner ---- */
-function renderBanner(){
+async function renderBanner(){
   const banner = document.getElementById("banner");
   const track = document.getElementById("bannerTrack");
   const images = window.BANNER_IMAGES || [];
 
   if (images.length === 0) return; // stays hidden — nothing to show
 
-  // Repeat the image list enough times that one full "cycle" is at
-  // least as wide as the screen — otherwise a short list (even just
-  // one image) would leave empty space instead of filling the strip.
-  // This is a rough estimate; it's fine to overshoot since extra
-  // repeats just make the loop a bit longer, not visually different.
-  const approxImgWidth = 150; // generous guess, refined by measuring below
-  const repeats = Math.max(1, Math.ceil(window.innerWidth / (images.length * approxImgWidth)) + 1);
+  const bannerHeight = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--banner-height")) || 56;
+
+  // Preload every image directly (not via lazy-loaded <img> tags) so we
+  // know each one's real width up front — this is what avoids the
+  // "plays for a bit then freezes" bug: that happened because lazily
+  // loaded, mostly off-screen duplicate images never finished loading,
+  // so the real animation duration never got set.
+  const loaded = await Promise.all(images.map(src => new Promise(resolve => {
+    const img = new Image();
+    img.onload = () => resolve({ src, width: img.naturalWidth * (bannerHeight / img.naturalHeight) });
+    img.onerror = () => resolve({ src, width: bannerHeight * 1.5 }); // fallback guess if an image fails to load
+    img.src = src;
+  })));
+
+  const baseSetWidth = loaded.reduce((sum, i) => sum + i.width, 0);
+
+  // repeat the list enough times that one full pass fills at least
+  // two screen-widths (capped so we don't ever build an absurd number
+  // of <img> tags for a very narrow single image on a very wide screen)
+  const repeats = Math.min(24, Math.max(1, Math.ceil((window.innerWidth * 2) / baseSetWidth)));
+
   const cycle = [];
-  for (let i = 0; i < repeats; i++) cycle.push(...images);
+  for (let i = 0; i < repeats; i++) cycle.push(...loaded);
 
   // duplicate the full cycle once more so the loop has no visible seam
   const doubled = [...cycle, ...cycle];
-  track.innerHTML = doubled.map(src => `<img src="${src}" alt="" loading="lazy">`).join("");
+  track.innerHTML = doubled.map(i => `<img src="${i.src}" alt="">`).join("");
 
   banner.style.display = "block";
 
-  // wait for images to actually load before measuring real width —
-  // sizes aren't known until then, so measuring earlier would be wrong
-  const imgs = Array.from(track.querySelectorAll("img"));
-  Promise.all(imgs.map(img => img.complete
-    ? Promise.resolve()
-    : new Promise(resolve => { img.onload = resolve; img.onerror = resolve; })
-  )).then(() => {
-    const oneSetWidth = track.scrollWidth / 2;
-    const speed = Number(getComputedStyle(document.documentElement).getPropertyValue("--banner-speed")) || 40;
-    track.style.animationDuration = `${oneSetWidth / speed}s`;
-  });
+  const speed = Number(getComputedStyle(document.documentElement).getPropertyValue("--banner-speed")) || 40;
+  const oneSetWidth = baseSetWidth * repeats;
+  track.style.animationDuration = `${oneSetWidth / speed}s`;
 }
 
 renderControls();
