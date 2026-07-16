@@ -14,7 +14,7 @@
    something unique to you (e.g. your domain) to avoid clashing
    with other people's counters. */
 const COUNTER_BASE = "https://countapi.mileshilliard.com/api/v1";
-const SITE_KEY = "drayh-luchade-personal-site"; // change this to something unique to you
+const SITE_KEY = "alexrivera-personal-site"; // change this to something unique to you
 
 function counterKey(entryId){
   return `${SITE_KEY}_${entryId}`;
@@ -136,10 +136,27 @@ function renderEntryBody(e){
 /* ---- state ---- */
 let activeType = null;      // null | "article" | "photo" | "video"
 let sortMode = "newest";    // "newest" | "oldest" | "popular"
+let selectedTags = new Set(); // tags currently toggled on (AND logic — entry must have ALL of them)
 let allEntries = buildEntries();
+
+function allTags(){
+  const set = new Set();
+  allEntries.forEach(e => (e.tags || []).forEach(t => set.add(t)));
+  return Array.from(set).sort();
+}
 
 async function getSortedEntries(){
   let list = [...allEntries];
+
+  if (activeType){
+    list = list.filter(e => e.kind === activeType);
+  }
+  if (selectedTags.size > 0){
+    list = list.filter(e => {
+      const entryTags = e.tags || [];
+      return Array.from(selectedTags).every(t => entryTags.includes(t));
+    });
+  }
 
   if (sortMode === "popular"){
     const counts = await Promise.all(list.map(e => getCount(e.id)));
@@ -153,9 +170,6 @@ async function getSortedEntries(){
     });
   }
 
-  if (activeType){
-    list = list.filter(e => e.kind === activeType);
-  }
   return list;
 }
 
@@ -164,9 +178,10 @@ async function render(){
   feed.innerHTML = `<p class="empty">loading…</p>`;
 
   const entries = await getSortedEntries();
+  updateTagCount(entries.length);
 
   if (entries.length === 0){
-    feed.innerHTML = `<p class="empty">// nothing here yet</p>`;
+    feed.innerHTML = `<p class="empty">// no entries</p>`;
     return;
   }
 
@@ -178,6 +193,7 @@ async function render(){
         ${sortMode === "popular" ? `<span class="views">${e._count} view${e._count === 1 ? "" : "s"}</span>` : ""}
       </div>
       <h2>${e.title}</h2>
+      ${e.tags && e.tags.length ? `<div class="entry-tags">${e.tags.map(t => `<button class="tag-chip" data-tag="${t}">#${t}</button>`).join("")}</div>` : ""}
       ${renderEntryBody(e)}
     </article>
   `).join("");
@@ -190,6 +206,16 @@ async function render(){
       if (card.dataset.kind === "article" && card.querySelector(".full")){
         card.classList.toggle("expanded");
       }
+    });
+  });
+
+  // tag chips on each entry: clicking one adds it to the active tag filter
+  feed.querySelectorAll(".tag-chip").forEach(chip => {
+    chip.addEventListener("click", (evt) => {
+      evt.stopPropagation(); // don't also trigger the card's own click handler
+      selectedTags.add(chip.dataset.tag);
+      renderTagBar();
+      render();
     });
   });
 
@@ -255,6 +281,60 @@ function renderControls(){
   drawSort();
 }
 
+/* ---- tag bar: select tags (AND logic), search/filter the chip list, show a live count ---- */
+let tagSearchTerm = "";
+
+function updateTagCount(count){
+  const el = document.getElementById("tagCount");
+  if (!el) return;
+  el.textContent = count === 0 ? "no entries" : `${count} entr${count === 1 ? "y" : "ies"}`;
+}
+
+function renderTagBar(){
+  const bar = document.getElementById("tagBar");
+  const chipContainer = document.getElementById("tagFilters");
+  const searchInput = document.getElementById("tagSearch");
+  const clearBtn = document.getElementById("tagClear");
+  const tags = allTags();
+
+  if (tags.length === 0){
+    bar.style.display = "none";
+    return;
+  }
+  bar.style.display = "flex";
+
+  const visibleTags = tags.filter(t => t.toLowerCase().includes(tagSearchTerm.toLowerCase()));
+  chipContainer.innerHTML = visibleTags.map(t =>
+    `<button data-tag="${t}" class="${selectedTags.has(t) ? "active" : ""}">#${t}</button>`
+  ).join("");
+
+  chipContainer.querySelectorAll("button").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const tag = btn.dataset.tag;
+      if (selectedTags.has(tag)) selectedTags.delete(tag);
+      else selectedTags.add(tag);
+      renderTagBar();
+      render();
+    });
+  });
+
+  clearBtn.style.display = selectedTags.size > 0 ? "inline" : "none";
+}
+
+function wireTagControls(){
+  document.getElementById("tagSearch").addEventListener("input", (evt) => {
+    tagSearchTerm = evt.target.value;
+    renderTagBar();
+  });
+  document.getElementById("tagClear").addEventListener("click", () => {
+    selectedTags.clear();
+    tagSearchTerm = "";
+    document.getElementById("tagSearch").value = "";
+    renderTagBar();
+    render();
+  });
+}
+
 /* ---- scrolling banner ---- */
 async function renderBanner(){
   const banner = document.getElementById("banner");
@@ -299,5 +379,7 @@ async function renderBanner(){
 }
 
 renderControls();
+wireTagControls();
+renderTagBar();
 render();
 renderBanner();
