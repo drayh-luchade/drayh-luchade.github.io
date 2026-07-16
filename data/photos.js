@@ -12,6 +12,8 @@
 
    Optional:
      caption — a single line shown under the photo(s)
+     tags    — array of lowercase words, no "#", e.g. ["vacation", "sunrise"].
+               Powers the tag bar at the top of the page.
    ============================================================ */
 window.PHOTOS = [
   {
@@ -20,6 +22,7 @@ window.PHOTOS = [
     date: "2026-06-15",
     time: "5:40 AM",
     images: ["images/seceda-1.jpg", "images/seceda-2.jpg"],
-    caption: "-2°C, worth it."
+    caption: "-2°C, worth it.",
+    tags: ["vacation", "sunrise"]
   }
 ];

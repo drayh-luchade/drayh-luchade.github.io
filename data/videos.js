@@ -14,6 +14,8 @@
 
    Optional:
      description — a line or two shown under the video
+     tags        — array of lowercase words, no "#", e.g. ["editing", "tutorial"].
+                   Powers the tag bar at the top of the page.
    ============================================================ */
 window.VIDEOS = [
   {
@@ -22,6 +24,7 @@ window.VIDEOS = [
     date: "2026-06-20",
     time: "2:00 PM",
     youtubeId: "dQw4w9WgXcQ",
-    description: "A quick walkthrough of my Lightroom process for the shots from the last trip."
+    description: "A quick walkthrough of my Lightroom process for the shots from the last trip.",
+    tags: ["editing", "tutorial"]
   }
 ];

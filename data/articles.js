@@ -15,6 +15,10 @@
                article, e.g. ["images/photo1.jpg"]. Put the actual
                image files in the /images folder.
      caption — a single caption line shown under the images
+     tags    — array of lowercase words, no "#", e.g. ["vacation", "hiking"].
+               Powers the tag bar at the top of the page — visitors can
+               select multiple tags to narrow down to entries that have
+               ALL of them (e.g. "vacation" + "hiking" together).
    ============================================================ */
 window.ARTICLES = [
   {
@@ -27,7 +31,8 @@ window.ARTICLES = [
       "Writing up the full route notes soon, but the short version: bring more socks than you think you need."
     ],
     images: ["images/dolomites-1.jpg"],
-    caption: "Somewhere above Rifugio Lagazuoi, day two."
+    caption: "Somewhere above Rifugio Lagazuoi, day two.",
+    tags: ["vacation", "hiking"]
   },
   {
     id: "todo-app",
@@ -36,6 +41,7 @@ window.ARTICLES = [
     time: "6:40 PM",
     text: [
       "Switched to a single paper notebook a few months ago and haven't looked back. Not making a grand claim about analog vs digital — it just turned out that friction was the feature I needed."
-    ]
+    ],
+    tags: ["productivity"]
   }
 ];
